@@ -14,6 +14,7 @@ class LlmResponse(BaseModel):
 class ChromaDBSearchQuery(BaseModel):
     user_id: int
     query: str
+    channel_ids: List[int]
     top_k: int
 
 class ChromaDBSearchResponse(BaseModel):

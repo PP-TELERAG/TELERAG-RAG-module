@@ -26,10 +26,11 @@ class ChromaDBClient:
         embeddings = await self.Chunker.get_embeddings(chunks)
 
         ids = [f"{request.document_id}:{i}" for i in range(len(chunks))]
-        metadatas = [{"text": chunk} for chunk in chunks]
+        metadatas = [{"channel_id": request.channel_id}]
 
         self.collection.add(
             ids=ids,
+            documents=chunks,
             embeddings=embeddings,
             metadatas=metadatas,
         )
@@ -37,8 +38,13 @@ class ChromaDBClient:
 
     async def __search(self, request: ChromaDBSearchQuery):
         query_embedding = self.Chunker.model.encode(request.query).tolist()
-        result = self.collection.query(query_embeddings=[query_embedding], n_results=request.top_k)
-        texts = [metadata['text'] for metadata in result['metadatas'][0]]
+        where_filter = ({"channel_id": {"$in": request.channel_ids}})
+        result = self.collection.query(
+            query_embeddings=[query_embedding],
+            n_results=request.top_k,
+            where=where_filter
+        )
+        texts = result['documents'][0]
         await self.search_responses_queue.put(ChromaDBSearchResponse(user_id=request.user_id, query=request.query, response=texts))
 
     async def runloop(self):
