@@ -30,7 +30,7 @@ class BrokerGateAway:
                     logger.error("Search query consumption response arrived with status code {}", response.status_code)
                     return ChromaDBSearchQuery(query="<NO RESPONSE>")
                 jsoned = response.json()
-                chroma_request = ChromaDBSearchQuery(user_id=jsoned["userId"], query=jsoned["query"], top_k=jsoned["topK"])
+                chroma_request = ChromaDBSearchQuery(user_id=jsoned["userId"], query=jsoned["query"], channel_ids=jsoned["channelIds"], top_k=jsoned["topK"])
             except Exception as e:
                 logger.exception("Exception while consuming search query: {}", e)
                 return ChromaDBSearchQuery(query="<NO RESPONSE>")
