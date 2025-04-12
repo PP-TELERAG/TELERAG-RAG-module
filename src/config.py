@@ -23,9 +23,9 @@ class Configuration(BaseSettings):
 
     # BROKER RELATED
     BROKER_URL: str
-    BROKER_DOC_TOPIC: str
-    BROKER_SEARCH_IN_TOPIC: str
-    BROKER_SEARCH_OUT_TOPIC: str
+    BROKER_IN_TOPIC: str
+    BROKER_OUT_TOPIC: str
+
     class Config:
         env_file = ".env"
 
